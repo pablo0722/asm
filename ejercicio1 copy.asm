@@ -210,6 +210,19 @@ mostrarCadena:                   ; RUTINA PARA MOSTRAR UNA CADENA USANDO PRINTF
         ;add esp, 4
 
 	ret
+	
+	
+mostrarEnter:
+    sub esp, 4
+    sub esp, 4
+    
+	mov	edx, 1    ;message length
+	mov	ecx, ' '   ;message to write
+	mov [esp], ecx
+	mov	ecx, esp    ;message to write
+	mov	ebx, 1	    ;file descriptor (stdout)
+	mov	eax, 4	    ;system call number (sys_write)
+	int	0x80        ;call kernel
 
 mostrarNumero:                ; RUTINA PARA MOSTRAR UN NUMERO ENTERO USANDO PRINTF
 
@@ -221,19 +234,27 @@ mostrarNumero:                ; RUTINA PARA MOSTRAR UN NUMERO ENTERO USANDO PRIN
         
     sub esp, 4
     sub esp, 4
+    
+	mov	edx, 1    ;message length
+	mov	ecx, ' '   ;message to write
+	mov [esp], ecx
+	mov	ecx, esp    ;message to write
+	mov	ebx, 1	    ;file descriptor (stdout)
+	mov	eax, 4	    ;system call number (sys_write)
+	int	0x80        ;call kernel
 	
 	
     mov ecx, 0
     mov eax, [numero]
     cmp eax, 10
-    jg .resta
+    jge .resta
     jmp .sigue
 .resta:
     add ecx, 1
     mov ebx, 10
     sub eax, ebx ;eax = eax - ebx
     cmp eax, 10
-    jg .resta
+    jge .resta
 .sigue:
     mov [esp+4], eax
 	mov	edx, 1    ;message length
@@ -303,15 +324,34 @@ main:		                  ; PUNTO DE INICIO DEL PROGRAMA
 	call leerNumero ; scanf("%d", &numero)
 	call mostrarNumero ; printf ("%d", numero)
 	;mov ebx, [numero] ; ebx = numero
+	call mostrarEnter ; printf ("%d", numero)
 
     mov ebx, [numero]
-	mov ecx, 10 ; ecx = 10
+	mov ecx, 9 ; ecx = 9
 .tabla:
+	push eax
+	push ebx
+	push ecx
+	push edx
+	call mostrarNumero ; printf ("%d", numero)
+	pop edx
+	pop ecx
+	pop ebx
+	pop eax
 	add [numero], ebx ; var1 = var1 + numero
 	
-    sub ecx, 1
-	call mostrarNumero ; printf ("%d", numero)
+    ;sub ecx, 1
 	loop .tabla
+	
+	push eax
+	push ebx
+	push ecx
+	push edx
+	call mostrarNumero ; printf ("%d", numero)
+	pop edx
+	pop ecx
+	pop ebx
+	pop eax
 	
 
     JMP salirDelPrograma
