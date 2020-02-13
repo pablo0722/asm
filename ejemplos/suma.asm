@@ -23,6 +23,9 @@
         global main              ; ETIQUETAS QUE MARCAN EL PUNTO DE INICIO DE LA EJECUCION
         
 	global _start
+	global _main
+	global _WinMain
+	global WinMain
 
         
 
@@ -132,8 +135,10 @@ salirDelPrograma:     ; PUNTO DE SALIDA DEL PROGRAMA USANDO EXIT
         
 	call exit ; exit(var1);
 
+_main:
+_WinMain:
+WinMain:
 _start:
-
 main:                    ; PUNTO DE INICIO DEL PROGRAMA
 		
 		
