@@ -42,9 +42,6 @@ ingreseNumero_str:
 errorValidarDato_str:
     db  "Numero ingresado no cumple con la restriccion", 10, 0
 
-finDePrograma_str:
-    db  10, "Fin de programa", 10, 0
-
 
 
 
@@ -114,17 +111,7 @@ imprimirTabla:
 	call mostrarNumero ; printf ("%d\n", numero)
 ret
 
-salirDelPrograma:             ; PUNTO DE SALIDA DEL PROGRAMA USANDO EXIT
-    push finDePrograma_str
-    call printf ; printf("Fin de programa\n")
-    add esp, 4
-
-    push 0
-    call exit ; exit(0)
-    add esp, 4
-ret
-
-main:		                  ; PUNTO DE INICIO DEL PROGRAMA
+main:
     call ingresarNumero
     call imprimirTabla
     

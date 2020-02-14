@@ -23,7 +23,6 @@ section .bss
 
 cadena:
     resb 32
-cadena_len equ $ - cadena ; largo de la cadena
 
 idx:
     resd 1
@@ -52,9 +51,6 @@ noEsPalindromo_str:
 cadenaVacia_str:
     db  "Cadena vacia", 10, 0
 
-finDePrograma_str:
-    db  10, "Fin de programa", 10, 0
-
 
 
 
@@ -64,7 +60,7 @@ section .text
 
 leerCadena:
     push cadena
-    call gets ; fgets (cadena, cadena_len, stdin)
+    call gets ; gets (cadena)
     add esp, 4
 ret
 
@@ -80,17 +76,7 @@ ingresarCadena:
     call printf ; printf ("Ingrese una cadena: ");
     add esp, 4
 
-	call leerCadena ; fgets (cadena, cadena_len, stdin)
-ret
-
-salirDelPrograma:             ; PUNTO DE SALIDA DEL PROGRAMA USANDO EXIT
-    push finDePrograma_str
-    call printf ; printf("Fin de programa\n")
-    add esp, 4
-
-    push 0
-    call exit ; exit(0)
-    add esp, 4
+	call leerCadena ; gets (cadena)
 ret
 
 analizarPalindromo:
@@ -154,7 +140,7 @@ ret
     add esp, 4
 ret
 
-main:		                  ; PUNTO DE INICIO DEL PROGRAMA
+main:
     call ingresarCadena
     call analizarPalindromo
     

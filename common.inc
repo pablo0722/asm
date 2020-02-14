@@ -1,7 +1,8 @@
 ; INCLUSION DE FUNCIONES EXTERNAS
-extern printf ;
+extern printf
+extern scanf
 extern scanf  ; FUNCIONES DE C (IMPORTADAS)
-extern exit   ;
+extern exit
 extern gets   ; GETS ES MUY PELIGROSA. SOLO USARLA EN EJERCICIOS BASICOS, JAMAS EN EL TRABAJO!!!
 extern strlen
 
@@ -13,7 +14,10 @@ extern strlen
 section .text
 
 fmtInt:
-    db  "%d", 0         ; formato para numero entero 32bits
+    db  "%d", 0         ; formato para numero entero 32bits signado
+
+fmtUInt:
+    db  "%u", 0         ; formato para numero entero 32bits no signado
 
 fmtHex:
     db  "%#x", 0        ; formato para numero entero 32bits en hexa
@@ -26,6 +30,16 @@ fmtChar:
 
 fmtNL:
     db    10, 0         ; SALTO DE LINEA (LF)
+
+finDePrograma_str:
+    db  10, "Fin de programa", 10, 0
+
+
+
+
+
+; SECCION DE LAS CONSTANTES PARA DEBUG
+section .text
 
 fmtRegs:
     db  10, "eax: %#x, ebx: %#x, ecx: %#x, edx: %#x, esi: %#x, edi: %#x", 10, 0 ; formato para 6 numeros enteros 32bits en hexa (para los 6 registros)
@@ -43,7 +57,24 @@ mostrarEnter:
     add esp, 4
 ret
 
-DEBUG_reset_regs: ; resetea todos los registros a cero. Para debuguear
+salirDelPrograma:             ; PUNTO DE SALIDA DEL PROGRAMA USANDO EXIT
+    push finDePrograma_str
+    call printf ; printf("Fin de programa\n")
+    add esp, 4
+
+    push 0
+    call exit ; exit(0)
+    add esp, 4
+ret
+
+
+
+
+
+; SECCION DE LAS FUNCIONES PARA DEBUG
+section .text
+
+DEBUG_reset_regs: ; resetea todos los registros a cero
     xor eax, eax
     xor ebx, ebx
     xor ecx, ecx
@@ -52,7 +83,7 @@ DEBUG_reset_regs: ; resetea todos los registros a cero. Para debuguear
     xor edi, edi
 ret
 
-DEBUG_print_regs: ; imprime todos los registro. Para debuguear
+DEBUG_print_regs: ; imprime todos los registro
     pushad
 
     push edi
