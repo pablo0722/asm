@@ -42,19 +42,18 @@ section .text
 
 ingreseCadena_str:
     db  "Ingrese una cadena: ", 0
-ingreseCadena_len equ $ - ingreseCadena_str ; largo de la cadena
 
-sonIguales_str:
-    db  "son iguales", 10, 0
-sonIguales_len equ $ - sonIguales_str ; largo de la cadena
+esPalindromo_str:
+    db  "La cadena ingresada SI es un palindromo", 10, 0
 
-sonDistintas_str:
-    db  "son distintas", 10, 0
-sonDistintas_len equ $ - sonDistintas_str ; largo de la cadena
+noEsPalindromo_str:
+    db  "La cadena ingresada NO es un palindromo", 10, 0
+
+cadenaVacia_str:
+    db  "Cadena vacia", 10, 0
 
 finDePrograma_str:
     db  10, "Fin de programa", 10, 0
-finDePrograma_len equ $ - finDePrograma_str ; largo de la cadena
 
 
 
@@ -72,12 +71,6 @@ ret
 mostrarCadena:
     push cadena
     call printf ; printf (cadena)
-    add esp, 4
-ret
-
-mostrarEnter:
-    push fmtNL
-    call printf
     add esp, 4
 ret
 
@@ -104,20 +97,59 @@ analizarPalindromo:
     push cadena
     call strlen
     add esp, 4
+    ; eax es el tamaño de la cadena (es el indice del '\0' de la cadena)
 
-    mov [idx], eax
-    sub dword eax, 1
-    add eax, cadena
+    cmp eax, 0
+    jle .cadena_vacia
 
-    mov eax, [eax]
-    cmp al, [cadena]
-    je .sonIguales
-    push sonDistintas_str
+
+    ; eax va a apuntar a los caracteres moviendose desde el final al comienzo
+    ; bx va a contener el caracter apuntado por eax
+    ; ecx va a apuntar a los caracteres moviendose desde comienzo al final
+    ; dx va a contener el caracter apuntado por ecx
+    ; va a dejar de comparar cuando ebx y edx sean distintos o cuando eax <= ecx
+
+    dec eax ; eax es el indice del ultimo caracter de la cadena
+
+
+    add eax, cadena ; eax apunta al ultimo caracter de la cadena
+
+
+    mov ecx, cadena ; ecx apunta al primer caracter de la cadena
+    
+    jmp .compara_loop
+
+.loop:
+    dec eax ; muevo puntero eax un lugar hacia el comienzo de la cadena
+    inc ecx ; muevo puntero ecx un lugar hacia el final de la cadena
+
+.compara_loop:
+    mov ebx, [eax]
+    mov edx, [ecx]
+
+
+    cmp eax, ecx
+    jle .si_es_palindromo ; salgo del loop cuando eax <= ecx
+
+    cmp bl, dl
+    jne .no_es_palindromo ; salgo del loop cuando ebx y edx son distintos
+
+    jmp .loop
+
+.si_es_palindromo:
+    push esPalindromo_str
     call printf
     add esp, 4
 ret
-.sonIguales: 
-    push sonIguales_str
+
+.no_es_palindromo:
+    push noEsPalindromo_str
+    call printf
+    add esp, 4
+ret
+
+.cadena_vacia:
+    push cadenaVacia_str
     call printf
     add esp, 4
 ret

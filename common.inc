@@ -9,16 +9,61 @@ extern strlen
 
 
 
+; SECCION DE LAS CONSTANTES
 section .text
 
 fmtInt:
     db  "%d", 0         ; formato para numero entero 32bits
 
+fmtHex:
+    db  "%#x", 0        ; formato para numero entero 32bits en hexa
+
 fmtString:
     db  "%s", 0         ; formato para cadenas
 
 fmtChar:
-    db    "%c", 0   ; FORMATO PARA CARACTERES
+    db    "%c", 0       ; formato para caracteres
 
 fmtNL:
-    db    10, 0             ; SALTO DE LINEA (LF)
+    db    10, 0         ; SALTO DE LINEA (LF)
+
+fmtRegs:
+    db  10, "eax: %#x, ebx: %#x, ecx: %#x, edx: %#x, esi: %#x, edi: %#x", 10, 0 ; formato para 6 numeros enteros 32bits en hexa (para los 6 registros)
+
+
+
+
+
+; SECCION DE LAS FUNCIONES
+section .text
+
+mostrarEnter:
+    push fmtNL
+    call printf
+    add esp, 4
+ret
+
+DEBUG_reset_regs: ; resetea todos los registros a cero. Para debuguear
+    xor eax, eax
+    xor ebx, ebx
+    xor ecx, ecx
+    xor edx, edx
+    xor esi, esi
+    xor edi, edi
+ret
+
+DEBUG_print_regs: ; imprime todos los registro. Para debuguear
+    pushad
+
+    push edi
+    push esi
+    push edx
+    push ecx
+    push ebx
+    push eax
+    push fmtRegs
+    call printf
+    add esp, 28
+    
+    popad
+ret

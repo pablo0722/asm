@@ -38,15 +38,12 @@ section .text
 
 ingreseNumero_str:
     db  "Ingrese un numero entre 1 y 10: ", 0
-ingreseNumero_len equ $ - ingreseNumero_str ; largo de la cadena
 
 errorValidarDato_str:
     db  "Numero ingresado no cumple con la restriccion", 10, 0
-errorValidarDato_len equ $ - errorValidarDato_str ; largo de la cadena
 
 finDePrograma_str:
     db  10, "Fin de programa", 10, 0
-finDePrograma_len equ $ - finDePrograma_str ; largo de la cadena
 
 
 
@@ -79,12 +76,6 @@ validarNumero:
 ret
 .ok:
     xor eax, eax
-ret
-
-mostrarEnter:
-    push fmtNL
-    call printf
-    add esp, 4
 ret
 
 mostrarNumero:                ; RUTINA PARA MOSTRAR UN NUMERO ENTERO USANDO PRINTF
