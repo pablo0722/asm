@@ -1,4 +1,4 @@
-; Se ingresa una cadena. La computadora indica si es un palíndromo.
+; Se ingresa una cadena. La computadora indica si es un palindromo.
 
 
 
@@ -39,6 +39,9 @@ section .data
 ; SECCION DE LAS CONSTANTES
 section .text
 
+enunciado_str:
+    db "Se ingresa una cadena. La computadora indica si es un palindromo.", 10, 10, 0
+
 ingreseCadena_str:
     db  "Ingrese una cadena: ", 0
 
@@ -58,6 +61,12 @@ cadenaVacia_str:
 ; SECCION DE LAS FUNCIONES
 section .text
 
+mostrarEnunciado:
+    push enunciado_str
+    call printf
+    add esp, 4
+ret
+
 leerCadena:
     push cadena
     call gets ; gets (cadena)
@@ -71,7 +80,6 @@ mostrarCadena:
 ret
 
 ingresarCadena:
-.start:    
     push ingreseCadena_str
     call printf ; printf ("Ingrese una cadena: ");
     add esp, 4
@@ -141,6 +149,7 @@ ret
 ret
 
 main:
+    call mostrarEnunciado
     call ingresarCadena
     call analizarPalindromo
     

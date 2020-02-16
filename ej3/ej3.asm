@@ -40,6 +40,9 @@ section .data
 ; SECCION DE LAS CONSTANTES
 section .text
 
+enunciado_str:
+    db "Se ingresa una cadena. La computadora la muestra en mayusculas.", 10, 10, 0
+
 ingreseCadena_str:
     db  "Ingrese una cadena: ", 0
 
@@ -53,8 +56,13 @@ cadenaMayuscula_str:
 ; SECCION DE LAS FUNCIONES
 section .text
 
+mostrarEnunciado:
+    push enunciado_str
+    call printf
+    add esp, 4
+ret
+
 ingresarCadena:
-.start:    
     push ingreseCadena_str
     call printf ; printf ("Ingrese una cadena: ");
     add esp, 4
@@ -76,6 +84,7 @@ mostrarCaracter:                 ; rutina para mostrar un caracter usando printf
     ret
 
 main:
+    call mostrarEnunciado
     call ingresarCadena
     
     push cadenaMayuscula_str

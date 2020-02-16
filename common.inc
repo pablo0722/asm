@@ -4,6 +4,7 @@ extern scanf
 extern scanf  ; FUNCIONES DE C (IMPORTADAS)
 extern exit
 extern gets   ; GETS ES MUY PELIGROSA. SOLO USARLA EN EJERCICIOS BASICOS, JAMAS EN EL TRABAJO!!!
+extern getchar
 extern strlen
 
 
@@ -26,10 +27,16 @@ fmtString:
     db  "%s", 0         ; formato para cadenas
 
 fmtChar:
-    db    "%c", 0       ; formato para caracteres
+    db  " %c", 0        ; formato para caracteres. Espacio en blanco para ignorar espacios y '\n' en el scanf
+
+fmtbyte:
+    db  "%hhd", 0       ; formato para bytes
 
 fmtNL:
     db    10, 0         ; SALTO DE LINEA (LF)
+
+fmtSpace:
+    db    " ", 0         ; Espacio
 
 finDePrograma_str:
     db  10, "Fin de programa", 10, 0
@@ -53,6 +60,12 @@ section .text
 
 mostrarEnter:
     push fmtNL
+    call printf
+    add esp, 4
+ret
+
+mostrarEspacio:
+    push fmtSpace
     call printf
     add esp, 4
 ret

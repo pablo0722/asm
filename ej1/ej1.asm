@@ -21,6 +21,9 @@ global main ; etiqueta que marca el inicio de la ejecucion
 ; SECCION DE LAS VARIABLES NO INICIALIZADAS
 section .bss
 
+numeroOriginal:
+    resd 1
+
 numero:
     resd 1
 
@@ -36,11 +39,17 @@ section .data
 ; SECCION DE LAS CONSTANTES
 section .text
 
+enunciado_str:
+    db "Dado un entero N, tal que 0 < N < 11, la computadora muestra la tabla de multiplicar de N.", 10, 10, 0
+
 ingreseNumero_str:
     db  "Ingrese un numero entre 1 y 10: ", 0
 
 errorValidarDato_str:
     db  "Numero ingresado no cumple con la restriccion", 10, 0
+
+imprimirNumero_str:
+    db  "%d x %2d = %d", 0
 
 
 
@@ -48,6 +57,12 @@ errorValidarDato_str:
 
 ; SECCION DE LAS FUNCIONES
 section .text
+
+mostrarEnunciado:
+    push enunciado_str
+    call printf
+    add esp, 4
+ret
 
 leerNumero:                   ; RUTINA PARA LEER UN NUMERO ENTERO USANDO SCANF
     push numero
@@ -76,15 +91,22 @@ ret
 ret
 
 mostrarNumero:                ; RUTINA PARA MOSTRAR UN NUMERO ENTERO USANDO PRINTF
+    ; en ecx tengo el numero de vuelta de forma decreciente
+    mov eax, 10
+    sub eax, ecx ; en eax tengo el numero de vuelta de forma normal (de 1 a 10)
+
     push dword [numero]
-    push fmtInt
-    call printf ; printf ("%d", numero)
-    add esp, 8
+    push eax
+    push ebx ; en ebx tengo el numero original
+    push imprimirNumero_str
+    call printf ; printf ("%d x %d = %d", numeroOriginal, vuelta, numero)
+    add esp, 16
     call mostrarEnter
 ret
 
 ingresarNumero:
-.start:    
+.comienzo:
+    call mostrarEnunciado
     push ingreseNumero_str
     call printf ; printf ("Ingrese un numero: ");
     add esp, 4
@@ -93,12 +115,12 @@ ingresarNumero:
 
     call validarNumero ; chequea si 0 < numero <= 11
     cmp eax, 1
-    je .start ; if (ret_value == 1) goto .start
+    je .comienzo ; if (ret_value == 1) goto .comienzo
 ret
 
 imprimirTabla:
     mov ebx, [numero] ; ebx = numero
-	mov ecx, 9 ; for (ecx=9, ecx>=0; ecx--)
+	mov ecx, 9 ; for (ecx=9, ecx>0; ecx--)
 .tabla:
 	push ebx ; salvo registro ebx
 	push ecx ; salvo registro ecx
